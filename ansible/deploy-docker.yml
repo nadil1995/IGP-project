@@ -1,0 +1,17 @@
+- hosts: web
+  become: true
+  vars:
+    container_name: retail-app
+  tasks:
+    - name: Ensure old container is absent
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        state: absent
+
+    - name: Run new container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        image: "{{ docker_user }}/{{ image_name }}:{{ build_number }}"
+        published_ports:
+          - "8080:8080"
+        restart_policy: always
