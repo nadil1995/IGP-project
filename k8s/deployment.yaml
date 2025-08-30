@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xyz-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: xyzrepo
+  template:
+    metadata:
+      labels:
+        app: xyzrepo
+    spec:
+      containers:
+      - name: xyzrepo
+        image: <DOCKER_USER>/xyzrepo:latest
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5

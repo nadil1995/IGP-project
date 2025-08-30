@@ -1,17 +1,28 @@
-- hosts: web
+---
+- name: Deploy app container
+  hosts: docker
   become: true
+  collections:
+    - community.docker
   vars:
-    container_name: retail-app
+    app_name: "{{ image_name }}"
+    docker_user: "{{ docker_user }}"
+    image_tag: "{{ build_number }}"
+    image: "{{ docker_user }}/{{ app_name }}:{{ image_tag }}"
+    host_port: 8081
+    container_port: 8080
+
   tasks:
     - name: Ensure old container is absent
       community.docker.docker_container:
-        name: "{{ container_name }}"
+        name: "{{ app_name }}"
         state: absent
+        force_kill: true
 
     - name: Run new container
       community.docker.docker_container:
-        name: "{{ container_name }}"
-        image: "{{ docker_user }}/{{ image_name }}:{{ build_number }}"
+        name: "{{ app_name }}"
+        image: "{{ image }}"
         published_ports:
-          - "8080:8080"
-        restart_policy: always
+          - "{{ host_port }}:{{ container_port }}"
+        restart_policy: unless-stopped
