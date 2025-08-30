@@ -55,11 +55,19 @@ pipeline {
             steps {
                 dir("${WORKSPACE}") {
                     // Optional: upgrade ansible and install required collections on the Jenkins node
-                    sh '''
-                        pip install --upgrade ansible
-                        ansible-galaxy collection install community.docker
-                        pip install docker
-                    '''
+                     sh '''
+                # Ensure ansible and docker python bindings are installed
+                sudo apt update -y
+                sudo apt install -y ansible python3-docker
+
+                # Install required Ansible collections
+                ansible-galaxy collection install community.docker
+
+                # Run playbook
+                ansible-playbook -i /var/lib/jenkins/ansible/inventory \
+                /var/lib/jenkins/ansible/deploy-docker.yml \
+                --extra-vars "build_number=${BUILD_NUMBER} docker_user=${DOCKER_USER} image_name=${IMAGE_NAME}"
+            '''
 
                     // Run the playbook using workspace-relative paths
                     sh """
