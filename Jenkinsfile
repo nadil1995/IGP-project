@@ -51,7 +51,7 @@ pipeline {
             }
         }
 
-        stage('Deploy via Ansible') {
+stage('Deploy via Ansible') {
             steps {
                 dir("${WORKSPACE}") {
                     // Optional: upgrade ansible and install required collections on the Jenkins node
@@ -68,6 +68,6 @@ pipeline {
                     """
                 }
             }
-        }
+
     }
 }
