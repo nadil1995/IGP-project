@@ -55,23 +55,24 @@ pipeline {
             steps {
                 dir("${WORKSPACE}") {
                     // Optional: upgrade ansible and install required collections on the Jenkins node
-                            sh '''
-                        # Create a virtual environment for Python packages
-                        python3 -m venv venv
-                        source venv/bin/activate
+                       sh '''
+                # Create virtual environment
+                python3 -m venv venv
 
-                        # Upgrade pip inside venv
-                        pip install --upgrade pip
+                # Use '.' instead of 'source' for POSIX compliance
+                . venv/bin/activate
 
-                        # Install ansible, docker python library, and collections
-                        pip install ansible docker
-                        ansible-galaxy collection install community.docker
+                # Upgrade pip
+                pip install --upgrade pip
 
-                        # Run the playbook using the virtualenv python
-                        ansible-playbook -i /var/lib/jenkins/ansible/inventory \
-                        /var/lib/jenkins/ansible/deploy-docker.yml \
-                        --extra-vars "build_number=${BUILD_NUMBER} docker_user=${DOCKER_USER} image_name=${IMAGE_NAME}"
-                    '''
+                # Install required packages
+                pip install ansible docker
+                ansible-galaxy collection install community.docker
+
+                # Run playbook
+                python ansible-playbook -i /var/lib/jenkins/ansible/inventory /var/lib/jenkins/ansible/deploy-docker.yml \
+                    --extra-vars "build_number=${BUILD_NUMBER} docker_user=${DOCKER_USER} image_name=${IMAGE_NAME}"
+            '''
 
           
                 }
