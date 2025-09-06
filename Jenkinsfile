@@ -27,7 +27,7 @@ pipeline {
         }
     }
 
-    ppost {
+    post {
         always {
             // Archive the WAR (Tomcat deployable)
             archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
