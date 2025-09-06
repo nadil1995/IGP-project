@@ -51,6 +51,19 @@ pipeline {
         }
     }
 
+      stage('Cleanup') {
+            stage('Deploy to Kubernetes') {
+    steps {
+        sh 'export KUBECONFIG=/var/lib/jenkins/kubeconfig'
+        sh 'sed -i "s|latest|${BUILD_NUMBER}|g" deployment.yaml'
+        sh 'kubectl apply -f deployment.yaml'
+        sh 'kubectl apply -f service.yaml'
+        sh 'kubectl get pods'
+        sh 'kubectl get services'
+    }
+}
+        }   
+
     post {
         always {
             archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
