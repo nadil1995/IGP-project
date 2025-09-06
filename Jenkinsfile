@@ -36,33 +36,38 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withDockerRegistry([credentialsId: "mydockerhubcred", url: ""]) {
-                    sh 'docker push nadil95/xyztechnologies:${BUILD_NUMBER}'
+                script {
+                    docker.withRegistry('', 'mydockerhubcred') {
+                        sh 'docker push nadil95/xyztechnologies:${BUILD_NUMBER}'
+                    }
                 }
             }
         }
 
         stage('Deploy Container') {
             steps {
-                sh 'docker stop abcapp || true'
-                sh 'docker rm abcapp || true'
-                sh 'docker run -d --name abcapp -p 8081:8080 nadil95/xyztechnologies:${BUILD_NUMBER}'
+                sh '''
+                  docker stop abcapp || true
+                  docker rm abcapp || true
+                  docker run -d --name abcapp -p 8081:8080 nadil95/xyztechnologies:${BUILD_NUMBER}
+                '''
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withEnv(["KUBECONFIG=/var/lib/jenkins/kubeconfig"]) {
+                    sh '''
+                      sed -i "s|latest|${BUILD_NUMBER}|g" deployment.yaml
+                      kubectl apply -f deployment.yaml
+                      kubectl apply -f service.yaml
+                      kubectl get pods
+                      kubectl get services
+                    '''
+                }
             }
         }
     }
-
-    
-            stage('Deploy to Kubernetes') {
-    steps {
-        sh 'export KUBECONFIG=/var/lib/jenkins/kubeconfig'
-        sh 'sed -i "s|latest|${BUILD_NUMBER}|g" deployment.yaml'
-        sh 'kubectl apply -f deployment.yaml'
-        sh 'kubectl apply -f service.yaml'
-        sh 'kubectl get pods'
-        sh 'kubectl get services'
-    }
-}
-          
 
     post {
         always {
