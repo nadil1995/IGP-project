@@ -51,7 +51,7 @@ pipeline {
         }
     }
 
-      stage('Cleanup') {
+    
             stage('Deploy to Kubernetes') {
     steps {
         sh 'export KUBECONFIG=/var/lib/jenkins/kubeconfig'
@@ -62,7 +62,7 @@ pipeline {
         sh 'kubectl get services'
     }
 }
-        }   
+          
 
     post {
         always {
