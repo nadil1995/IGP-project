@@ -1,12 +1,11 @@
 pipeline {
     agent any
     
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/nadil1995/IGP-project.git'
-            }
-        }
+    stage('Checkout') {
+    steps {
+        git branch: 'main', url: 'https://github.com/nadil1995/IGP-project.git'
+    }
+}
         
         stage('Compile') {
             steps {
