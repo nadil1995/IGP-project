@@ -27,9 +27,10 @@ pipeline {
         }
     }
 
-    post {
+    ppost {
         always {
-            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+            // Archive the WAR (Tomcat deployable)
+            archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
         }
     }
 }
