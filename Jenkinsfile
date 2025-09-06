@@ -29,8 +29,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh 'cp target/XYZtechnologies-1.0.war .'
-                sh 'docker build -t abctechnologies:${BUILD_NUMBER} .'
-                sh 'docker tag abctechnologies:${BUILD_NUMBER} nadil95/xyztechnologies:${BUILD_NUMBER}'
+                sh 'docker build -t xyztechnologies:${BUILD_NUMBER} .'
+                sh 'docker tag xyztechnologies:${BUILD_NUMBER} nadil95/xyztechnologies:${BUILD_NUMBER}'
             }
         }
 
