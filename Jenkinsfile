@@ -46,7 +46,7 @@ pipeline {
             steps {
                 sh 'docker stop abcapp || true'
                 sh 'docker rm abcapp || true'
-                sh 'docker run -d --name abcapp -p 8081:8080 nadil95/abctechnologies:${BUILD_NUMBER}'
+                sh 'docker run -d --name abcapp -p 8081:8080 nadil95/xyztechnologies:${BUILD_NUMBER}'
             }
         }
     }
