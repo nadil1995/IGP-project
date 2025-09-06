@@ -25,11 +25,34 @@ pipeline {
                 sh 'mvn package'
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'cp target/XYZtechnologies-1.0.war .'
+                sh 'docker build -t abctechnologies:${BUILD_NUMBER} .'
+                sh 'docker tag abctechnologies:${BUILD_NUMBER} nadil95/xyztechnologies:${BUILD_NUMBER}'
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withDockerRegistry([credentialsId: "mydockerhubcred", url: ""]) {
+                    sh 'docker push nadil95/xyztechnologies:${BUILD_NUMBER}'
+                }
+            }
+        }
+
+        stage('Deploy Container') {
+            steps {
+                sh 'docker stop abcapp || true'
+                sh 'docker rm abcapp || true'
+                sh 'docker run -d --name abcapp -p 8081:8080 nadil95/abctechnologies:${BUILD_NUMBER}'
+            }
+        }
     }
 
     post {
         always {
-            // Archive the WAR (Tomcat deployable)
             archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
         }
     }

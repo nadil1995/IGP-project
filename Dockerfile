@@ -1,14 +1,13 @@
-# FROM tomcat:9.0
-# # remove default ROOT app
-# RUN rm -rf /usr/local/tomcat/webapps/ROOT
-# # copy your app
-# COPY target/XYZtechnologies-1.0.war /usr/local/tomcat/webapps/XYZtechnologies-1.0.war
-# EXPOSE 8080
-# CMD ["catalina.sh", "run"]
+FROM tomcat:9.0-jdk11-openjdk
 
+# Remove default webapps
+RUN rm -rf /usr/local/tomcat/webapps/*
 
-FROM tomcat:9.0-jdk17
-ARG WAR_FILE=target/XYZtechnologies-1.0.war
-COPY ${WAR_FILE} /usr/local/tomcat/webapps/ROOT.war
+# Copy WAR file
+COPY XYZtechnologiestechnologies-1.0.war /usr/local/tomcat/webapps/
+
+# Expose port
 EXPOSE 8080
-CMD ["catalina.sh","run"]
+
+# Start Tomcat
+CMD ["catalina.sh", "run"]
