@@ -1,28 +1,30 @@
 ---
-- name: Deploy app container
-  hosts: docker
-  become: true
-  collections:
-    - community.docker
+- hosts: docker_hosts
+  become: yes
   vars:
-    app_name: "{{ image_name }}"
-    docker_user: "{{ docker_user }}"
-    image_tag: "{{ build_number }}"
-    image: "{{ docker_user }}/{{ app_name }}:{{ image_tag }}"
-    host_port: 8081
+    image_name: "nadil95/xyztechnologies"   # Docker Hub repo
+    container_name: "abcapp"
+    host_port: 8081                          # change if 8080 is in use
     container_port: 8080
+    build_number: "{{ build_number }}"       # pass from Jenkins
 
   tasks:
-    - name: Ensure old container is absent
-      community.docker.docker_container:
-        name: "{{ app_name }}"
+    - name: Stop existing container if running
+      docker_container:
+        name: "{{ container_name }}"
         state: absent
-        force_kill: true
-
-    - name: Run new container
-      community.docker.docker_container:
-        name: "{{ app_name }}"
-        image: "{{ image }}"
-        published_ports:
+      ignore_errors: yes
+    
+    - name: Pull Docker image from Docker Hub
+      docker_image:
+        name: "{{ image_name }}:{{ build_number }}"
+        source: pull
+    
+    - name: Run Docker container
+      docker_container:
+        name: "{{ container_name }}"
+        image: "{{ image_name }}:{{ build_number }}"
+        ports:
           - "{{ host_port }}:{{ container_port }}"
-        restart_policy: unless-stopped
+        state: started
+        restart_policy: always
