@@ -30,7 +30,9 @@ pipeline {
            steps {
         sh 'cp target/XYZtechnologies-1.0.war ROOT.war'
         sh 'docker build -t xyztechnologies:${BUILD_NUMBER} .'
-        sh 'docker tag xyztechnologies:${BUILD_NUMBER} nadil95/xyztechnologies:${BUILD_NUMBER}'
+        sh 'docker tag xyztechnologies:${BUILD_NUMBER} nadil95/xyztechnologies:latest'
+        sh 'docker push nadil95/xyztechnologies:latest'
+
     }
         }
 
@@ -44,12 +46,13 @@ pipeline {
             }
         }
 
-        stage('Deploy Container to Docker Host') {
+        stage('Deploy Container') {
             steps {
                 sh '''
                   docker stop abcapp || true
                   docker rm abcapp || true
-                  docker run -d --name abcapp -p 8081:8080 nadil95/xyztechnologies:${BUILD_NUMBER}
+                  docker run -d --restart unless-stopped --name abcapp -p 8081:8080 nadil95/xyztechnologies:${BUILD_NUMBER}
+
                 '''
             }
         }
