@@ -1,17 +1,14 @@
-# Use Tomcat with JDK 17 (matches modern Java builds)
-FROM tomcat:9.0-jdk17-openjdk
+# Use Tomcat with matching JDK version
+FROM tomcat:9.0-jdk8-openjdk
 
-# Remove default webapps
+# Remove default webapps (optional but recommended)
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy WAR file as ROOT.war
-COPY ROOT.war /usr/local/tomcat/webapps/ROOT.war
+# Copy your WAR as ROOT.war
+COPY target/XYZtechnologies-1.0.war /usr/local/tomcat/webapps/ROOT.war
 
 # Expose Tomcat port
 EXPOSE 8080
 
-# Optional: enable verbose logs for debugging
-ENV CATALINA_OPTS="-Djava.util.logging.config.file=/usr/local/tomcat/conf/logging.properties"
-
-# Start Tomcat in foreground
+# Start Tomcat in the foreground
 CMD ["catalina.sh", "run"]
