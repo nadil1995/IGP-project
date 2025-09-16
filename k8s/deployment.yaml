@@ -1,23 +1,6 @@
-cat > deployment.yaml << 'EOF'
+
+# Correct  
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: xyzapp
-  labels:
-    app: xyzapp
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: xyzapp
-  template:
-    metadata:
-      labels:
-        app: xyzapp
-    spec:
-      containers:
-      - name: xyzapp
-        image: xyzapp:latest
-        ports:
-        - containerPort: 8080
-EOF
+  name: xyzapp-deployment
