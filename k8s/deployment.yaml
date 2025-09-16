@@ -1,6 +1,21 @@
-
-# Correct  
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: xyzapp-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: xyzapp
+  template:
+    metadata:
+      labels:
+        app: xyzapp
+    spec:
+      containers:
+      - name: xyz-container
+        image: nadil95/xyztechnologies:BUILD_NUMBER
+
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always

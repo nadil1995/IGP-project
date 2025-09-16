@@ -5,8 +5,8 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: xyzrepo
+    app: xyzapp
   ports:
-    - port: 8081
-      targetPort: 8080
-      nodePort: 30080
+    - port: 8081        # service port
+      targetPort: 8080  # container port
+      nodePort: 30080   # external port
