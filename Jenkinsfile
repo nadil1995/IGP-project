@@ -8,38 +8,25 @@ pipeline {
             }
         }
 
-        stage('Compile') {
+        stage('Compile & Test & Package') {
             steps {
-                sh 'mvn compile'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'mvn package'
+                sh 'mvn clean package'
             }
         }
 
         stage('Build & Push Docker Image') {
-    steps {
-        script {
-            docker.withRegistry('', 'mydockerhubcred') {
-                sh 'cp target/XYZtechnologies-1.0.war ROOT.war'
-                sh 'docker build -t nadil95/xyztechnologies:${BUILD_NUMBER} .'
-                sh 'docker tag nadil95/xyztechnologies:${BUILD_NUMBER} nadil95/xyztechnologies:latest'
-                sh 'docker push nadil95/xyztechnologies:${BUILD_NUMBER}'
-             
+            steps {
+                script {
+                    docker.withRegistry('', 'mydockerhubcred') {
+                        sh 'cp target/XYZtechnologies-1.0.war ROOT.war'
+                        sh 'docker build -t nadil95/xyztechnologies:${BUILD_NUMBER} .'
+                        sh 'docker tag nadil95/xyztechnologies:${BUILD_NUMBER} nadil95/xyztechnologies:latest'
+                        sh 'docker push nadil95/xyztechnologies:${BUILD_NUMBER}'
+                        sh 'docker push nadil95/xyztechnologies:latest'
+                    }
+                }
             }
         }
-    }
-}
-
 
         stage('Deploy Container') {
             steps {
@@ -47,7 +34,6 @@ pipeline {
                   docker stop abcapp || true
                   docker rm abcapp || true
                   docker run -d --restart unless-stopped --name abcapp -p 8081:8080 nadil95/xyztechnologies:${BUILD_NUMBER}
-
                 '''
             }
         }
