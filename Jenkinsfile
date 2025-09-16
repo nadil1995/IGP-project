@@ -54,20 +54,20 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                withEnv(["KUBECONFIG=/var/lib/jenkins/kubeconfig"]) {
-                    sh '''
-                    cd k8s/ 
-                      sed -i "s|latest|${BUILD_NUMBER}|g" deployment.yaml
-                      kubectl apply -f deployment.yaml
-                      kubectl apply -f service.yaml
-                      kubectl get pods
-                      kubectl get services
-                    '''
-                }
-            }
-        }
+        // stage('Deploy to Kubernetes') {
+        //     steps {
+        //         withEnv(["KUBECONFIG=/var/lib/jenkins/kubeconfig"]) {
+        //             sh '''
+        //             cd k8s/ 
+        //               sed -i "s|latest|${BUILD_NUMBER}|g" deployment.yaml
+        //               kubectl apply -f deployment.yaml
+        //               kubectl apply -f service.yaml
+        //               kubectl get pods
+        //               kubectl get services
+        //             '''
+        //         }
+        //     }
+        // }
     }
 
     post {
