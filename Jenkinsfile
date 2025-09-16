@@ -34,7 +34,7 @@ pipeline {
                 sh 'docker build -t nadil95/xyztechnologies:${BUILD_NUMBER} .'
                 sh 'docker tag nadil95/xyztechnologies:${BUILD_NUMBER} nadil95/xyztechnologies:latest'
                 sh 'docker push nadil95/xyztechnologies:${BUILD_NUMBER}'
-                sh 'docker push nadil95/xyztechnologies:latest'
+             
             }
         }
     }
