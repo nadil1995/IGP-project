@@ -42,6 +42,8 @@ pipeline {
             steps {
                 sh 'kubectl apply -f k8s/deployment.yaml'
                 sh 'kubectl apply -f k8s/service.yaml'
+                sh 'kubectl get pods'
+                sh 'kubectl get svc'
             }
         }
     }
