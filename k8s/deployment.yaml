@@ -1,21 +1,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: xyzapp-deployment
+  name: xyz-deployment
+  labels:
+    app: xyz
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: xyzapp
+      app: xyz
   template:
     metadata:
       labels:
-        app: xyzapp
+        app: xyz
     spec:
       containers:
-      - name: xyz-container
-        image: nadil95/xyztechnologies:BUILD_NUMBER
-
+      - name: xyz
+        # Replace IMAGE_PLACEHOLDER at deploy time (we'll show Jenkins how to do it)
+        image: nadil95/xyztechnologies:IMAGE_PLACEHOLDER
         ports:
         - containerPort: 8080
-        imagePullPolicy: Always
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 20
