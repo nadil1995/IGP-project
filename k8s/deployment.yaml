@@ -1,34 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: xyz-deployment
-  labels:
-    app: xyz
+  name: java-app-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: xyz
+      app: java-app
   template:
     metadata:
       labels:
-        app: xyz
+        app: java-app
     spec:
       containers:
-      - name: xyz
-        # Replace IMAGE_PLACEHOLDER at deploy time (we'll show Jenkins how to do it)
-        image: nadil95/xyztechnologies:IMAGE_PLACEHOLDER
+      - name: java-app-container
+        image: nadil95/xyztechnologies:latest   # 👈 use the pushed image
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8080
-          initialDelaySeconds: 20
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 20
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-app-service
+spec:
+  type: NodePort
+  selector:
+    app: java-app
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 30080
