@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: xyz-service
 spec:
-  type: NodePort   # simple for Minikube; we’ll show alternatives below
+  type: NodePort   
   selector:
     app: xyz
   ports:
   - name: http
     port: 80
     targetPort: 8080
-    nodePort: 30080   # fixed node port so you know the port. Must be 30000-32767
+    nodePort: 30080  
